@@ -2,12 +2,15 @@
 package org.owasp.webgoat.lessons;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.ecs.Element;
 import org.apache.ecs.ElementContainer;
 import org.apache.ecs.StringElement;
@@ -20,8 +23,8 @@ import org.apache.ecs.html.TR;
 import org.apache.ecs.html.Table;
 import org.owasp.webgoat.session.DatabaseUtilities;
 import org.owasp.webgoat.session.ECSFactory;
-import org.owasp.webgoat.session.WebSession;
 import org.owasp.webgoat.session.ParameterNotFoundException;
+import org.owasp.webgoat.session.WebSession;
 
 
 /***************************************************************************************************
@@ -94,21 +97,23 @@ public class DOS_Login extends LessonAdapter
 
             // Check if the login is valid
             Connection connection = DatabaseUtilities.getConnection(s);
-
-            String query = "SELECT * FROM user_system_data WHERE user_name = '" + username + "' and password = '"
-                    + password + "'";
-            ec.addElement(new StringElement(query));
+            PreparedStatement prep = connection.prepareStatement("SELECT * FROM user_system_data WHERE user_name = ?" + "and password = ?");
+            // SQL injection String query = "SELECT * FROM user_system_data WHERE user_name = '" + username + "' and password = '"
+            //        + password + "'";
+            prep.setString(1, username);
+            prep.setString(2, password);
+            ec.addElement((Element) prep.executeQuery());
 
             try
             {
-                Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                                                                    ResultSet.CONCUR_READ_ONLY);
-                ResultSet results = statement.executeQuery(query);
+                //Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                //                                                    ResultSet.CONCUR_READ_ONLY);
+                ResultSet results = prep.executeQuery();
 
                 if ((results != null) && (results.first() == true))
                 {
                     ResultSetMetaData resultsMetaData = results.getMetaData();
-                    ec.addElement(DatabaseUtilities.writeTable(results, resultsMetaData));
+                    //ec.addElement(DriverManager.writeTable(results, resultsMetaData));
                     results.last();
 
                     // If they get back more than one user they succeeded
@@ -117,21 +122,28 @@ public class DOS_Login extends LessonAdapter
                         // Make sure this isn't data from an sql injected query.
                         if (results.getString(2).equals(username) && results.getString(3).equals(password))
                         {
-                            String insertData1 = "INSERT INTO user_login VALUES ( '" + username + "', '"
-                                    + s.getUserName() + "' )";
-                            statement.executeUpdate(insertData1);
+                            //String insertData1 = "INSERT INTO user_login VALUES ( '" + username + "', '"
+                            //        + s.getUserName() + "' )";
+                            String insertData1 = "INSERT INTO user_login VALUES ( ? , ? )";
+                            PreparedStatement preparedStatement1 = connection.prepareStatement(insertData1);
+                            preparedStatement1.setString(1, "username");
+                            preparedStatement1.setString(2, s.getUserName());
+                            preparedStatement1.executeUpdate();
                         }
                         // check the total count of logins
-                        query = "SELECT * FROM user_login WHERE webgoat_user = '" + s.getUserName() + "'";
-                        results = statement.executeQuery(query);
+                        String query = "SELECT * FROM user_login WHERE webgoat_user = ?";
+                        PreparedStatement preparedStatementquery = connection.prepareStatement(query);
+                        preparedStatementquery.setString(1, s.getUserName());
+                        results = preparedStatementquery.executeQuery();
                         results.last();
                         // If they get back more than one user they succeeded
                         if (results.getRow() >= 3)
                         {
                             makeSuccess(s);
-                            String deleteData1 = "DELETE from user_login WHERE webgoat_user = '" + s.getUserName()
-                                    + "'";
-                            statement.executeUpdate(deleteData1);
+                            String deleteData1 = "DELETE from user_login WHERE webgoat_user = ?";
+                            PreparedStatement preparedStatementDelete = connection.prepareStatement(deleteData1);
+                            preparedStatementDelete.setString(1, s.getUserName());
+                            preparedStatementDelete.executeQuery();
                             return (new H1("Congratulations! Lesson Completed"));
                         }
 
@@ -142,8 +154,10 @@ public class DOS_Login extends LessonAdapter
                 {
                     ec.addElement(new H2("Login Failed"));
                     // check the total count of logins
-                    query = "SELECT * FROM user_login WHERE webgoat_user = '" + s.getUserName() + "'";
-                    results = statement.executeQuery(query);
+                    String query = "SELECT * FROM user_login WHERE webgoat_user = ?";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    preparedStatement.setString(1, s.getUserName());
+                    ResultSet result = preparedStatement.executeQuery(query);
                     results.last();
                     ec.addElement(new H2("Successfull login count: " + results.getRow()));
 
