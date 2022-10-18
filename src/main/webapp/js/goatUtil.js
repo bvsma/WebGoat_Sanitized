@@ -1,4 +1,4 @@
-import DOMPurify from 'dompurify';
+import * as DOMPurify from 'dompurify';
 
 goat.utils = {
     //TODO add recursion to handle arr[i].children objects

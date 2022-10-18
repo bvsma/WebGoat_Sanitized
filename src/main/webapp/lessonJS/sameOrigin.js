@@ -1,4 +1,4 @@
-import DOMPurify from 'dompurify'; 
+import * as DOMPurify from 'dompurify'; 
 
 function submitXHR(){
 
@@ -22,7 +22,7 @@ function submitXHR(){
 
 
 function ajaxFunction()
-  {
+  {JAVA
 	var xmlHttp;
   try
     {

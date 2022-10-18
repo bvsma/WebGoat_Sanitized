@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.regex.Pattern;
 
 
 /***************************************************************************************************
@@ -104,8 +105,13 @@ public class Exec
 		try
 		{
 			// start the command
+			// @bvsma Command injection fix with regex
+			if (!Pattern.matches("[0-9A-Za-z]+", command)) {  
+			//					return false;
+			}
+			else {
 			child = Runtime.getRuntime().exec(command);
-
+			}
 			// get the streams in and out of the command
 			InputStream processIn = child.getInputStream();
 			InputStream processError = child.getErrorStream();

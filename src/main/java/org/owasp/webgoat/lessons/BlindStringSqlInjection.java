@@ -1,6 +1,7 @@
 package org.owasp.webgoat.lessons;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -84,22 +85,25 @@ public class BlindStringSqlInjection extends LessonAdapter
         Element b = ECSFactory.makeButton("Go!");
         ec.addElement(b);
 
-        String query = "SELECT * FROM user_data WHERE userid = " + accountNumber;
-        String answer_query;
+        String query = "SELECT * FROM user_data WHERE userid = ?";
+        PreparedStatement prep = connection.prepareStatement(query);
+        prep.setString(1, accountNumber);
 //      if (runningOnWindows())
 //      {
 //      answer_query = "SELECT TOP 1 first_name FROM user_data WHERE userid = "
 //          + TARGET_CC_NUM;
 //      } else
 //      {
-        answer_query = "SELECT name FROM pins WHERE cc_number = '" + TARGET_CC_NUM +"'";
+        String answer_query = "SELECT name FROM pins WHERE cc_number = ?";
+        PreparedStatement prep_answer_query = connection.prepareStatement(answer_query);
+        prep_answer_query.setString(1, TARGET_CC_NUM);
 //      }
 
         try
         {
         Statement answer_statement = connection.createStatement(
             ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-        ResultSet answer_results = answer_statement.executeQuery(answer_query);
+        ResultSet answer_results = prep_answer_query.executeQuery();
         answer_results.first();
         System.out.println("Account: " + accountNumber );
         System.out.println("Answer : " + answer_results.getString(1));

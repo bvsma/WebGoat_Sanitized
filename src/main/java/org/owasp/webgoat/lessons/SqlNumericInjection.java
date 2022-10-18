@@ -102,7 +102,7 @@ public class SqlNumericInjection extends SequentialLessonAdapter
             }
             else
             {
-                query = "SELECT * FROM weather_data WHERE station = " + station;
+                query = "SELECT * FROM weather_data WHERE station = ?";
             }
 
             ec.addElement(new PRE(query));
@@ -113,9 +113,11 @@ public class SqlNumericInjection extends SequentialLessonAdapter
 
             try
             {
-                Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                                                                    ResultSet.CONCUR_READ_ONLY);
-                ResultSet results = statement.executeQuery(query);
+                // Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                //                                                    ResultSet.CONCUR_READ_ONLY);
+                PreparedStatement prep = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                prep.setString(1, station);
+                ResultSet results = prep.executeQuery(query);
 
                 if ((results != null) && (results.first() == true))
                 {

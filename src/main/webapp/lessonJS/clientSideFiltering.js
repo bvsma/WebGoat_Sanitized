@@ -1,4 +1,4 @@
-import DOMPurify from 'dompurify'; 
+import * as DOMPurify from 'dompurify';
 
 var dataFetched = false;
 
