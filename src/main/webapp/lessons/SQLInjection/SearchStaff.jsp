@@ -5,7 +5,8 @@
 			<% 
 			WebSession webSession = ((WebSession)session.getAttribute("websession"));
 			String searchedName = request.getParameter(SQLInjection.SEARCHNAME);
-			if (searchedName != null)
+			String escapedsearchName = HtmlUtils.htmlEscape(searchedName);
+			if (escapedsearchedName != null)
 			{
 			%>
 				Employee <%=searchedName%> not found.

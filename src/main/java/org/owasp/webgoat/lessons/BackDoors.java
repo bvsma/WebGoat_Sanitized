@@ -22,6 +22,9 @@ import org.apache.ecs.html.TR;
 import org.apache.ecs.html.Table;
 import org.owasp.webgoat.session.DatabaseUtilities;
 import org.owasp.webgoat.session.WebSession;
+import org.springframework.web.util.HtmlUtils;
+
+import java.lang.Object;
 
 
 /***************************************************************************************************
@@ -242,11 +245,11 @@ public class BackDoors extends SequentialLessonAdapter
         ec.addElement(username);
 
         String userInput = s.getParser().getRawParameter("username", "");
-
+        String escapeduserInput = HtmlUtils.htmlEscape(userInput);
         ec.addElement(new BR());
         ec.addElement(new BR());
 
-        String formattedInput = "<span class='myClass'>" + userInput + "</span>";
+        String formattedInput = "<span class='myClass'>" + escapeduserInput + "</span>";
         ec.addElement(new Div(SELECT_ST + formattedInput));
 
         Input b = new Input();

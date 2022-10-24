@@ -106,12 +106,12 @@ public class Exec
 		{
 			// start the command
 			// @bvsma Command injection fix with regex
-			if (!Pattern.matches("[0-9A-Za-z]+", command)) {  
-			//					return false;
-			}
-			else {
-			child = Runtime.getRuntime().exec(command);
-			}
+			//if (!Pattern.matches("[0-9A-Za-z]+", command)) {  
+					//			return false;
+			//}
+			//else {
+			//child = Runtime.getRuntime().exec((String) command);
+			//}
 			// get the streams in and out of the command
 			InputStream processIn = child.getInputStream();
 			InputStream processError = child.getErrorStream();

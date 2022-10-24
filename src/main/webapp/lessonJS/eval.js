@@ -1,5 +1,3 @@
-import DOMPurify from 'dompurify';
-
 var http_request = false;
 
 function makeXHR(method, url, parameters) {
@@ -33,13 +31,8 @@ function makeXHR(method, url, parameters) {
       http_request.onreadystatechange = function() {
       		if(http_request.readyState == 4) {
       			var status = http_request.status;
-      			var responseText = DOMPurify.sanitize(http_request.responseText);
-      			
-      			//alert('status: ' + status);
-      			//alert('responseText: ' + responseText);
-      			
-      			eval(responseText);      			
-		
+      			var responseText = http_request.responseText;     			
+      			JSON.parse(responseText);      					
       			if(responseText.indexOf("');") != -1 
 	      			&& responseText.indexOf("alert") != -1 
 	      			&& responseText.indexOf("document.cookie") != -1){

@@ -14,6 +14,7 @@ import org.apache.ecs.html.Input;
 import org.apache.ecs.html.P;
 import org.apache.ecs.html.TextArea;
 import org.owasp.webgoat.session.WebSession;
+import org.springframework.web.util.HtmlUtils;
 
 
 /***************************************************************************************************
@@ -104,13 +105,13 @@ public class JavaScriptValidation extends LessonAdapter
                 + "</SCRIPT>" + lineSep;
         try
         {
-            String param1 = s.getParser().getRawParameter("field1", "abc");
-            String param2 = s.getParser().getRawParameter("field2", "123");
-            String param3 = s.getParser().getRawParameter("field3", "abc 123 ABC");
-            String param4 = s.getParser().getRawParameter("field4", "seven");
-            String param5 = s.getParser().getRawParameter("field5", "90210");
-            String param6 = s.getParser().getRawParameter("field6", "90210-1111");
-            String param7 = s.getParser().getRawParameter("field7", "301-604-4882");
+            String param1 = HtmlUtils.htmlEscape(s.getParser().getRawParameter("field1", "abc"));
+            String param2 = HtmlUtils.htmlEscape(s.getParser().getRawParameter("field2", "123"));
+            String param3 = HtmlUtils.htmlEscape(s.getParser().getRawParameter("field3", "abc 123 ABC"));
+            String param4 = HtmlUtils.htmlEscape(s.getParser().getRawParameter("field4", "seven"));
+            String param5 = HtmlUtils.htmlEscape(s.getParser().getRawParameter("field5", "90210"));
+            String param6 = HtmlUtils.htmlEscape(s.getParser().getRawParameter("field6", "90210-1111"));
+            String param7 = HtmlUtils.htmlEscape(s.getParser().getRawParameter("field7", "301-604-4882"));
             ec.addElement(new StringElement(script));
             TextArea input1 = new TextArea("field1", 1, 25).addElement(param1);
             TextArea input2 = new TextArea("field2", 1, 25).addElement(param2);

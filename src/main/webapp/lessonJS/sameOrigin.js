@@ -52,18 +52,15 @@ function ajaxFunction()
     xmlHttp.onreadystatechange=function()
       {
       
-      var result = DOMPurify.sanitize(xmlHttp.responseText);
+      var sanitizedResult = DOMPurify.sanitize(xmlHttp.responseText);
       if(xmlHttp.readyState==4)
-        {
+        {       	
+        	var sanitizedRequestedURL = DOMPurify.sanitize("Response from:" + document.getElementById("requestedURL").value)
+        	document.getElementById("responseTitle").innerHTML = sanitizedRequestedURL;
+        		 
+        	document.getElementById("responseArea").innerHTML = sanitizedResult;         	
         	
-        	var sanitizedRequestedURL = DOMPurify.sanitize(document.getElementById("requestedURL").value)
-        	document.getElementById("responseTitle").innerHTML="Response from: " 
-        		+ sanitizedRequestedURL ;
-        		
-        	document.getElementById("responseArea").innerHTML=result;         	
-        	
-        	document.getElementById("requestedURL").value=""; 
-        	
+        	document.getElementById("requestedURL").value="";         	
         }
       }
       

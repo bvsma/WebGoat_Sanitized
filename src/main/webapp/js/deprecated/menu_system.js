@@ -136,7 +136,8 @@ function rollCMenu1(ev,a,b) {
 
 function trigMM1url(param,opt){
   var ur,x,i,nv,mn,pr=new Array();
-  ur=DOMPurify.sanitizeUrl(document.URL);x=ur.indexOf("?");
+  ur=encodeURI(document.URL);
+  x=ur.indexOf("?");
   if(x>1){pr=ur.substring(x+1,ur.length).split("&");
   for(i=0;i<pr.length;i++){nv=pr[i].split("=");
   if(nv.length>0){if(unescape(nv[0])==param){
