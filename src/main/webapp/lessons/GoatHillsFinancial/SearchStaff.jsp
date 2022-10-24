@@ -4,7 +4,7 @@
 	<div id="lesson_search">
 			<% 
 			WebSession webSession = ((WebSession)session.getAttribute("websession"));
-			String searchedName = request.getParameter(GoatHillsFinancial.SEARCHNAME);
+			String searchedName = htmlUtils.htmlEscape(request.getParameter(GoatHillsFinancial.SEARCHNAME));
 			if (searchedName != null)
 			{
 			%>

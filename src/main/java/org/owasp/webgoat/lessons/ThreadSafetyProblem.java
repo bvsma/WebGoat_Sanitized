@@ -2,6 +2,8 @@
 package org.owasp.webgoat.lessons;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
@@ -92,11 +94,11 @@ public class ThreadSafetyProblem extends LessonAdapter
                 Thread.sleep(1500);
 
                 // Get the users info from the DB
-                String query = "SELECT * FROM user_system_data WHERE user_name = '" + currentUser + "'";
-                Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                                                                    ResultSet.CONCUR_READ_ONLY);
-                ResultSet results = statement.executeQuery(query);
-
+                String query = "SELECT * FROM user_system_data WHERE user_name = ?";
+                //Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                //                                                    ResultSet.CONCUR_READ_ONLY);
+                PreparedStatement prepstmt = connection.prepareStatement(query);                                                     ResultSet results = statement.executeQuery(query);
+                prepstmt.setString(1, currentUser);
                 if ((results != null) && (results.first() == true))
                 {
                     ec.addElement("Account information for user: " + originalUser + "<br><br>");

@@ -4,7 +4,7 @@
 	<div id="lesson_search">
 			<% 
 			WebSession webSession = ((WebSession)session.getAttribute("websession"));
-			String searchedName = request.getParameter(CrossSiteScripting.SEARCHNAME);
+			String searchedName = htmlUtils.htmlEscape(request.getParameter(CrossSiteScripting.SEARCHNAME));
 			if (searchedName != null)
 			{
 			%>

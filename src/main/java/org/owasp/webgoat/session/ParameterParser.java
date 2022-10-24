@@ -6,6 +6,7 @@ import java.util.Vector;
 import java.util.regex.Pattern;
 import javax.servlet.ServletRequest;
 import org.owasp.webgoat.util.HtmlEncoder;
+import org.springframework.web.util.HtmlUtils;
 
 /**
  * *************************************************************************************************
@@ -550,6 +551,10 @@ public class ParameterParser {
      */
     public String getStringParameter(String name) throws ParameterNotFoundException {
         String[] values = request.getParameterValues(name);
+        for (String val: values) {
+            val = HtmlUtils.htmlEscape(val);
+        }
+        
         String value;
 
         if (values == null) {
